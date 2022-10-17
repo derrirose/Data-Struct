@@ -1,0 +1,11 @@
+int Length(List L)
+{
+    int count = 0;
+    List p = L;
+    while (p)
+    {
+        count++;
+        p=p->Next;
+    }
+    return count;
+}
