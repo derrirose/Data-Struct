@@ -1,0 +1,88 @@
+#include<iostream>
+using namespace std;
+struct List
+{
+    int data;
+    List* next;
+};
+List* Create(int n)//尾接法创建
+{
+    List* head = nullptr; List* pn = nullptr , * po = nullptr;
+    for (int i = 0; i < n; i++) {
+        pn = new List;
+        cin >> pn->data;
+        pn->next = nullptr;
+        if (head == nullptr) head = pn;
+        else po->next = pn;
+        po = pn;
+    }
+    return head;
+}
+int main()
+{
+    int n = 0;
+    int m = 0;
+    int op = 0;//操作码,0或者1
+    int k = 0;
+    int d = 0;
+    int num = 0;
+    int len = 0;
+    List* p1 = nullptr; List* p2 = nullptr;
+    cin >> n;
+    len = n;
+    List* head = Create(n);
+    cin >> m;
+    for (int i = 0; i < m; i++)
+    {
+        cin >> op;
+        p1 = head;
+        if (op == 0)
+        {
+            cin >> k>>d; 
+            if (k > len) continue;
+            if (k == 0)
+            {
+                p1 = new List;
+                p1->data = d;
+                p1->next = head;
+                head = p1;
+            }
+            else {
+                while (k != 1) {
+                    p1 = p1->next;
+                    k--;
+                }
+                p2 = new List;
+                p2->data = d;
+                p2->next = p1->next;
+                p1->next = p2;
+
+            }
+            len++;
+        }//order==0时对链表进行相应操作
+        else {
+            cin >> k;
+            if (k > len || k == 0) { continue; }
+            if (k == 1) {
+                head = head->next;
+            }
+            else {
+                while (k != 2) {
+                    p1 = p1->next;
+                    k--;
+                }
+                p2 = p1->next;
+                p1->next = p2->next;
+
+            }
+            len--;
+        }
+    }
+    p1 = head;
+    while (p1)
+    {
+        cout << p1->data << " ";
+        p1 = p1->next;
+    }
+    cout << endl;
+}
