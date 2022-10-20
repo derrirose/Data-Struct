@@ -1,0 +1,59 @@
+#include<iostream>
+using namespace std;
+struct Sta
+{
+    int*top;
+    int*base;
+    int len;
+};
+int InitS(Sta&zhan)
+{
+    zhan .base = new int[20000];
+    if(!zhan.base) return 0;
+    zhan.top= zhan.base;
+    zhan.len = 20000;
+    return 1;
+}
+int push(Sta&z,int d)
+{
+    if(z.top - z.base==z.len) return 0;
+    *z.top++=d;
+    return 1;
+}
+int pop(Sta&z,int &d)
+{
+    if(z.top==z.base) return 0;
+    d = *(--z.top);
+    return 1;
+}
+int main()
+{
+    Sta Z;
+    int n = 0;
+    int d = 0;
+    int op = 0;
+    int bepoped = 0;
+    InitS(Z);
+    cin>>n;
+    if(n<=20000)
+    {
+        while(n-->0)
+        {
+            cin>>op;
+            if(op==1)
+            {
+                cin>>d;
+                push(Z,d);
+            }
+            else if(Z.top==Z.base)
+                cout<<"invalid"<<endl;
+        
+        else
+        {
+            pop(Z,d);
+            bepoped = d;
+            cout<<bepoped<<endl;
+        }
+        }
+    }
+}
