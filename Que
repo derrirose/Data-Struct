@@ -1,0 +1,55 @@
+#include<iostream>
+using namespace std;
+struct Que
+{
+	int front;
+	int rear;
+	int* base;
+};
+void InitQ(Que& D)
+{
+	D.base = new int[20000];
+	D.front = D.rear = 0;	
+}
+int Join(Que& D, int d)
+{
+	if ((D.rear + 1) % 20000 == D.front)
+	{
+		cout << "invalid";
+		return 0;
+	}
+	D.base[D.rear] = d;
+	D.rear = (D.rear + 1) % 20000;
+	return 1;
+}
+void Quit(Que& D, int& d)
+{
+	if (D.front == D.rear)
+	{
+		cout << "invalid" << endl;
+		return;
+	}
+	d = D.base[D.front];
+	cout<<d<<endl;
+	D.front = (D.front + 1) % 20000;
+
+}
+int main()
+{
+	int n = 0; int op = 0; int d = 0; int quit = 0;
+	Que dq;
+	InitQ(dq);
+	cin >> n;
+	for (int i = 0; i < n; i++)
+	{
+		cin >> op;
+		if (op == 1)
+		{
+			cin >> d;
+			Join(dq, d);
+		}
+		else if(op==0)
+			Quit(dq, quit);
+
+	}
+}
