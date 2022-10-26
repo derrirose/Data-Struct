@@ -1,0 +1,74 @@
+#include<iostream>
+using namespace std;
+typedef struct Char
+{
+	char ch;
+	Char* next;
+	Char* prior;
+}* Charac;
+int main()
+{
+	char input = ' ';
+	Charac head = nullptr;//首
+	Charac tail = nullptr;//尾
+	Charac Cha = new Char();//建个表
+	Charac cursor = nullptr;//光标，遇到操作符时移动
+	Charac newc = nullptr;//存不是操作符的字符串用
+	head = Cha;
+	tail = Cha;
+	cursor = Cha;
+	while ((input = getchar()) != '\n')
+	{
+		switch (input)
+		{
+		case '{':
+			cursor = head;//光标指向头
+			break;
+		case '}':
+			cursor = tail;//光标指向尾
+			break;
+		case '[':
+			if (cursor->prior != nullptr)
+				cursor = cursor->prior;//光标前不为空时光标前移
+			break;
+		case ']':
+			if (cursor->next != nullptr)
+				cursor = cursor->next;//光标后不为空时光标后移
+			break;
+		case '#':
+			if (cursor->prior != nullptr)//前面有能删除的
+			{
+				cursor->prior->next = cursor->next;
+				if (cursor->next != nullptr)
+				{
+					cursor->next->prior = cursor->prior;
+					cursor = cursor->prior;//光标跑到删除节点的前面
+				}
+				else
+				{
+					cursor = cursor->prior;
+					cursor->next = nullptr;
+					tail = cursor;//删除的是最后一个节点，光标直接前移，尾更新到光标位置
+				}
+			}
+			break;
+		default:
+		{
+			newc = new Char;
+			newc->ch = input;
+			newc->next = cursor->next;
+			newc->prior = cursor;
+			cursor->next = newc;
+			cursor = newc;
+			if (cursor->next == nullptr)
+				tail = cursor;
+		}
+		}
+	}
+	cursor = head->next;
+	while (cursor)
+	{
+		printf("%c", cursor->ch);
+		cursor = cursor->next;
+	}
+}
