@@ -27,11 +27,11 @@ int main()
 		case '}':
 			cursor = tail;//光标指向尾
 			break;
-		case '[':
+		case '<':
 			if (cursor->prior != nullptr)
 				cursor = cursor->prior;//光标前不为空时光标前移
 			break;
-		case ']':
+		case '>':
 			if (cursor->next != nullptr)
 				cursor = cursor->next;//光标后不为空时光标后移
 			break;
