@@ -1,0 +1,40 @@
+#include<iostream>
+using namespace std;
+typedef struct Charac
+{
+	char ch;
+	struct Charac* next;
+	struct Charac* prior;
+};
+struct Charac* Create()
+{
+	int i = 0;
+	char c = ' ';
+	Charac* head = new Charac;
+	head->prior = nullptr;
+	head->next = nullptr;
+	Charac* temp = head;
+	Charac* newc = nullptr;
+	for (int i = 0; (c = getchar())!='\n'; i++)
+	{
+		newc = new Charac;
+		newc->next = nullptr;
+		newc->prior = nullptr;
+		newc->ch = c;
+		temp->next = newc;
+	    newc->prior = temp;
+		temp = temp->next;
+	}
+	return head;
+}
+int main()
+{
+	Charac* head = Create();
+	Charac* tmp = head->next;
+	while (tmp)
+	{
+		printf("%c", tmp->ch);
+		tmp = tmp->next;
+	}
+	
+}
