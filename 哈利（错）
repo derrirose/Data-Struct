@@ -11,7 +11,7 @@ int main()
 	char input = ' ';
 	Charac* head = nullptr;//首
 	Charac* tail = nullptr;//尾
-	Charac* Cha = new Charac;//建个表
+	Charac* Cha = new Charac;//建个表    
 	Charac* cursor = nullptr;//光标，遇到操作符时移动
 	Charac* newc = nullptr;//存不是操作符的字符串用
 	head = Cha;
