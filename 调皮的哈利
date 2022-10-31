@@ -1,0 +1,82 @@
+#include<iostream>
+using namespace std;
+struct Charac
+{
+	char ch;
+	Charac* prior;
+	Charac* next;
+};
+int main()
+{
+	Charac* head = nullptr;
+	Charac* tail = nullptr;
+	Charac* cur = nullptr;
+	Charac* cn = new Charac();
+	Charac *newc = nullptr;
+	head = cn;
+	tail = cn;
+	cur = cn;
+	char in = ' ';
+	while ((in = getchar()) != '\n')
+	{
+		switch (in)
+		{
+		case '{':
+			cur = head;
+			break;
+		case '}':
+				cur = tail;
+				break;
+		case '<':
+			if (cur->prior)
+				cur = cur->prior;
+			break;
+		case '>':
+			if (cur->next)
+				cur = cur->next;
+			break;
+		case '#':
+			if (cur->prior)
+			{
+				if (!cur->next)
+				{
+					cur = cur->prior;
+					cur->next = nullptr;
+					tail = cur;
+				}
+				else
+				{
+					cur->next->prior = cur->prior;
+					cur->prior->next = cur->next;
+					cur = cur->prior;
+				}
+			}
+			break;
+		default:
+		newc = new Charac();
+		newc->ch = in;
+		if (!cur->next)
+		{
+			newc->prior = cur;
+			cur->next = newc;
+			cur = newc;
+			tail = cur;
+		}
+		else
+		{
+			newc->next = cur->next;
+			cur->next->prior = newc;
+			newc->prior = cur;
+			cur->next = newc;
+			cur = newc;
+		}
+		break;
+		}
+	}
+	Charac* tmp = head->next;
+	while (tmp)
+	{
+		cout << tmp->ch;
+		tmp = tmp->next;
+	}
+}
