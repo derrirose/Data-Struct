@@ -1,0 +1,143 @@
+#include<iostream>
+using namespace std;
+struct axis
+{
+	int x;
+	int y;
+	int scount;
+};
+struct que
+{
+	que* next;
+	que* prior;
+	axis* a;
+};
+struct succeed
+{
+	succeed* next;
+	axis* a;
+};
+int main()
+{
+	int input[100][100];
+	int m = 0;
+	int n = 0;
+	int i = 0;
+	int j = 0;
+	static int visit[100][100];
+	int dx[4] = { 0,1,0,-1 };
+	int dy[4] = { 1,0,-1,0 };
+	succeed* row = new succeed();
+	row->next = nullptr;
+	axis* start = new axis();
+	axis* end = new axis();
+	que* head = nullptr;
+	que* tail = nullptr;
+	head = new que();
+	tail = new que();
+	head->next = head->prior = tail;
+	tail->next = tail->prior = head;
+	while (scanf("%d%d", &n, &m) != EOF)
+	{
+		for(i = 0;i<n;i++)
+			for (j = 0; j < m; j++)
+			{
+				scanf("%d", &input[i][j]);
+				if (input[i][j] == 3)
+				{
+					start->x = i;
+					start->y = j;
+					start->scount = 0;
+				}
+				else if(input[i][j]==4)
+				{
+					end->x = i;
+					end->y = j;
+				}
+				else if (input[i][j] == 1)
+				{
+					visit[i][j] = 1;
+				}
+			}
+		que* tmp1 = nullptr;
+		que* n1 = nullptr;
+		tmp1 = tail->prior;
+		n1 = new que();
+		n1->next = tail;
+		n1->prior = tmp1;
+		n1->a = start;
+		tail->prior = n1;
+		tmp1->next = n1;
+		while (head->next != tail)
+		{
+			que* first = nullptr;
+			que* tmp2 = nullptr;
+			que* aout = nullptr;
+			tmp2 = head->next->next;
+			aout = head->next;
+			head->next = tmp2;
+			tmp2->prior = head;
+			first = aout;
+			int nx = first->a->x;
+			int ny = first->a->y;
+			if (nx == end->x && ny == end->y)
+			{
+				if (row->next == nullptr)
+				{
+					succeed* tmp3 = new succeed();
+					tmp3->a = first->a;
+					tmp3->next = nullptr;
+					row->next = tmp3;
+				}
+				else
+				{
+					succeed* tmp4 = new succeed();
+					tmp4->a = first->a;
+					succeed* n = row->next;
+					row->next = tmp4;
+					tmp4->next = n;
+				}
+			}
+			else
+			{
+				for (i = 0; i < 4; i++)
+				{
+					if (nx + dx[i] >= 0 && nx + dx[i] < n && ny + dy[i]>0 && ny + dy[i] < m && visit[nx + dx[i]][ny + dy[i]] != 1)
+					{
+						axis* na = new axis();
+						na->x = nx + dx[i], na->y = ny + dy[i];
+						na->scount = first->a->scount + 1;
+						visit[nx + dx[i]][ny + dy[i]] = 1;
+						que* tmp5 = nullptr;
+						que* nna = nullptr;
+						tmp5 = tail->prior;
+						nna = new que();
+						nna->next = tail;
+						nna->prior = tmp5;
+						nna->a = na;
+						tail->prior = nna;
+						tmp5->next = nna;
+					}
+				}
+			}
+		}
+		succeed* tmp6 = row->next;
+		if (!tmp6)
+			cout << "unreachable" << endl;
+		else
+		{
+			int min = tmp6->a->scount;
+			while (tmp6)
+			{
+				if (tmp6->a->scount < min)
+				{
+					min = tmp6->a->scount;
+				}
+				tmp6 = tmp6->next;
+			}
+			printf("%d\n",min);
+		}
+		while (row->next)
+			row->next = nullptr;
+	}
+}
