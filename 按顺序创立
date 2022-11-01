@@ -1,0 +1,38 @@
+#include <iostream>
+using namespace std;
+struct Apple
+{
+	int num;
+	Apple* next;
+	Apple* prior;
+};
+int main()
+{
+	int n = 0;
+	int m = 0;
+	int x = 1;
+	int m = 0;
+	Apple* a = new Apple();
+	Apple* newa = nullptr;
+	Apple* tmp = a;
+	cin >> n;
+	for (int i = 1; i < n; i++)
+	{
+		a->num = x;
+		newa = new Apple();
+		newa->num = x+1;
+		newa->prior = a;
+		a->next = newa;
+		a = newa;
+		x++;
+	}
+	while (m--)
+	{
+
+	}
+	while (tmp)
+	{
+		cout << tmp->num;
+		tmp = tmp->next;
+	}
+}
