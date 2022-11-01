@@ -1,0 +1,53 @@
+#include<iostream>
+using namespace std;
+int main()
+{
+	int n = 0;
+	int m = 0;
+	char op = ' ';
+	int l = 0;
+	int r = 0;
+	int num[100001];
+	int left[100001];
+	int right[100001];
+	cin>>n>>m;
+	for (int i = 0; i <= n; i++)
+	{
+		    num[i] = i;
+			left[i] = i - 1;
+			left[0] = n;
+			right[i] = i + 1;
+			right[n] = 0;
+	}
+	while (m--)
+	{
+		getchar();
+		scanf("%c", &op);
+		if (op == 'L')
+		{
+		    scanf("%d%d", &l, &r);
+			right[left[l]] = right[l];
+			left[right[l]] = left[l];
+			right[left[r]] = l;
+			left[l] = left[r];
+			right[l] = r;
+			left[r] = l;
+		}
+		else
+		{
+            scanf("%d%d", &l, &r);
+			right[left[l]] = right[l];
+			left[right[l]] = left[l];
+			left[right[r]] = l;
+			right[l] = right[r];
+			left[l] = r;
+			right[r] = l;
+		}
+	}
+	int tmp = 0;
+	while (right[tmp])
+	{
+		printf("%d ", num[right[tmp]]);
+		tmp = num[right[tmp]];
+	}
+}
