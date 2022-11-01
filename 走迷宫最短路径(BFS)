@@ -1,0 +1,102 @@
+#include<iostream>
+using namespace std;
+struct que
+{
+	int x;
+	int y;
+	que* next;
+};
+int main()
+{
+	int n = 0;
+	int m = 0;
+	
+	int in[103][103];
+	int dx[4] = { -1,0,1,0 };
+	int dy[4] = { 0,1,0,-1 };
+	while (scanf("%d%d", &n, &m) != EOF)
+	{
+		int sign = 0;
+		int i = 0;
+		int j = 0;
+		int sx = 0;
+		int sy = 0;
+		int ex = 0;
+		int ey = 0;
+		int visit[103][103] = { 0 };
+		int des[103][103] = { 0 };
+		que* head = nullptr;
+		que* rear = nullptr;
+		que* newq = nullptr;
+		head = rear;
+		for (i = 0; i < n + 2; i++)
+			for (j = 0; j < m + 2; j++)
+			{
+				in[i][j] = 1;
+			}
+		for (i = 1; i <= n; i++)
+			for (j = 1; j <= m; j++)
+			{
+				scanf("%d", &in[i][j]);
+				if (in[i][j] == 3)
+				{
+					sx = i;
+					sy = j;
+				}
+				if (in[i][j] == 4)
+				{
+					ex = i;
+					ey = j;
+				}
+			}
+		
+		newq = new que();
+		newq->x = sx;
+		newq->y = sy;
+		newq->next = nullptr;
+		head = newq;
+		rear = newq;
+		visit[sx][sy] = 1;
+		des[sx][sy] = 0;
+		int outx = 0;
+		int outy = 0;
+		while (head && rear)
+		{
+			que* q = nullptr;
+			outx = head->x;
+			outy = head->y;
+			q = head->next;
+			head = q;
+			if (outx == ex && outy == ey)
+			{
+				printf("%d\n", des[outx][outy]);
+				sign = 1;
+			}
+			for (i = 0; i < 4; i++)
+			{
+				int x = outx + dx[i];
+				int y = outy + dy[i];
+				if (visit[x][y] == 0 && (in[x][y] == 0 || in[x][y] == 4))
+				{
+					visit[x][y] = 1;
+					newq = new que();
+					newq->x = x;
+					newq->y = y;
+					if (!head)
+					{
+						head = newq;
+						rear = newq;
+					}
+					else
+					{
+						rear->next = newq;
+						rear = newq;
+					}
+					des[x][y] = des[outx][outy] + 1;
+				}
+			}
+		}
+		if(!sign)
+		printf("unreachable\n");
+	}
+}
