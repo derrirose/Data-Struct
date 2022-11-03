@@ -11,14 +11,14 @@ struct calchar//运算符栈
 	char data[1000];
 	int top;
 };
-//int pow(int a1,int a2)
-//{
-//	if (a1 == 0) return 1;
-//	int b = pow(a1, a2/2);
-//	int ans = b * b;
-//	if (a2 % 2 == 1) ans *= a1;
-//	return ans;
-//}
+int pow(short int a1,short int a2)
+{
+	if (a1 == 0) return 1;
+	int b = pow(a1, a2/2);
+	int ans = b * b;
+	if (a2 % 2 == 1) ans *= a1;
+	return ans;
+}
 void Calc(calnum* n1,char op)
 {
 	flag = 0;
@@ -41,12 +41,7 @@ void Calc(calnum* n1,char op)
 		n1->data[n1->top++] = op1 / op2;
 		break;
 	case'^':
-		int ans = 1;
-		while (op2--)
-		{
-			ans *= op1;
-		}
-		n1->data[n1->top++] = ans;
+		n1->data[n1->top++] = pow(op1,op2);
 	}
 }
 int main()
