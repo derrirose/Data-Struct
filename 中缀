@@ -12,11 +12,11 @@ struct calchar//运算符栈
 	char data[1000];
 	int top;
 };
-int pow(short int a1,short int a2)
+double pow(int a1,long long int a2)
 {
-	if (a1 == 0) return 1;
-	int b = pow(a1, a2/2);
-	int ans = b * b;
+	if (a2 == 0) return 1;
+	double b = pow(a1, a2/2);
+	double ans = b * b;
 	if (a2 % 2 == 1) ans *= a1;
 	return ans;
 }
