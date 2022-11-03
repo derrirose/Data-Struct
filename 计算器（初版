@@ -1,0 +1,183 @@
+#include<iostream>
+using namespace std;
+int flag = 0;
+struct calnum//运算数栈
+{
+	int data[1000];
+	int top;
+};
+struct calchar//运算符栈
+{
+	char data[1000];
+	int top;
+};
+//int pow(int a1,int a2)
+//{
+//	if (a1 == 0) return 1;
+//	int b = pow(a1, a2/2);
+//	int ans = b * b;
+//	if (a2 % 2 == 1) ans *= a1;
+//	return ans;
+//}
+void Calc(calnum* n1,char op)
+{
+	flag = 0;
+	int op1 = 0;
+	int op2 = 0;
+	op2 = n1->data[--n1->top];
+	op1 = n1->data[--n1->top];
+	switch (op)
+	{
+	case'+':
+		n1->data[n1->top++] = op1 + op2;
+		break;
+	case'-':
+		n1->data[n1->top++] = op1 - op2;
+		break;
+	case'*':
+		n1->data[n1->top++] = op1 * op2;
+		break;
+	case'/':
+		n1->data[n1->top++] = op1 / op2;
+		break;
+	case'^':
+		int ans = 1;
+		while (op2--)
+		{
+			ans *= op1;
+		}
+		n1->data[n1->top++] = ans;
+	}
+}
+int main()
+{
+	char str[1000];
+	char ch = ' ';//临时变量
+	int trans = 0;//将读进来的字符型数字转化为真数字的中间变量
+	gets_s(str);
+	calnum numsta;
+	numsta.top = 0;
+	calchar charsta;
+	charsta.top = 0;
+	for (int i = 0; str[i] != '\0'; i++)
+	{		
+		if (str[i] >= '0' && str[i] <= '9')//如果为数字
+		{
+			trans = str[i] - '0';
+			while (str[i + 1] != '\0')//多位数值获取
+			{
+				if (str[i + 1] >= '0' && str[i + 1] <= '9')
+				{
+					trans = trans * 10 + str[i + 1] - '0';
+					i++;
+				}
+				else
+					break;//如果不是多位数字，则跳出多位获取循环
+			}
+			numsta.data[numsta.top++] = trans;//运算数入栈
+		}
+		else if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' ||str[i]=='^'|| str[i] == '(' || str[i] == ')')//如果为运算符
+		{
+			switch (str[i])//分情况对运算符操作
+			{
+				//1.加
+			case'+'://+-优先级最低，要判断是否压入
+				if (charsta.data[charsta.top - 1] != '+' && charsta.data[charsta.top - 1] != '-' && charsta.data[charsta.top - 1] != '*' && charsta.data[charsta.top - 1] != '/' && charsta.data[charsta.top - 1] != '^')
+				{
+					//前面没有运算符
+					charsta.data[charsta.top++] = '+';
+				}
+				else
+				{
+					while (charsta.top>0 && charsta.data[charsta.top - 1] != '(')
+					{
+						//将比+优先级高的运算符弹出来算
+						ch = charsta.data[--charsta.top];
+						Calc(&numsta, ch);
+					}
+					charsta.data[charsta.top++] = '+';//运算完前面再把加压进去
+				};
+				break;
+				//2.减
+			case'-'://和+同理
+				if (charsta.data[charsta.top - 1] != '+' && charsta.data[charsta.top - 1] != '-' && charsta.data[charsta.top - 1] != '*' && charsta.data[charsta.top - 1] != '/' && charsta.data[charsta.top - 1] != '^')
+				{
+					charsta.data[charsta.top++] = '-';
+				}
+				else
+				{
+					while (charsta.top>0 && charsta.data[charsta.top - 1] != '(')
+					{
+						//将比+优先级高的运算符弹出来算
+						ch = charsta.data[--charsta.top];
+						Calc(&numsta, ch);
+					}
+					charsta.data[charsta.top++] = '-';//运算完前面再把加压进去
+				};
+				break;
+			case'*'://优先级只比^和括号低
+				if (charsta.data[charsta.top - 1] != '*' && charsta.data[charsta.top - 1] != '/' && charsta.data[charsta.top - 1] != '^')
+				{
+					charsta.data[charsta.top++] = '*';
+				}
+				else
+				{
+					while (charsta.top>0 && charsta.data[charsta.top - 1] != '(')
+					{
+						ch = charsta.data[--charsta.top];
+						Calc(&numsta, ch);
+					}
+					charsta.data[charsta.top++] = '*';
+				};
+				break;
+			case'/'://和*同理
+				if (charsta.data[charsta.top - 1] != '*' && charsta.data[charsta.top - 1] != '/' && charsta.data[charsta.top - 1] != '^')
+				{
+					charsta.data[charsta.top++] = '/';
+				}
+				else
+				{
+					while (charsta.top>0 && charsta.data[charsta.top - 1] != '(')
+					{
+						ch = charsta.data[--charsta.top];
+						Calc(&numsta, ch);
+					}
+					charsta.data[charsta.top++] = '/';
+				};
+				break;
+			case'^'://优先级只比括号低
+				if (charsta.data[charsta.top - 1] != '^')
+				{
+					charsta.data[charsta.top++] = '^';
+				}
+				else
+				{
+					while (charsta.top>0 && charsta.data[charsta.top - 1] != '(')
+					{
+						ch = charsta.data[--charsta.top];
+						Calc(&numsta, ch);
+					}
+					charsta.data[charsta.top++] = '^';
+				};
+				break;
+			case'(':
+				charsta.data[charsta.top++] = '(';
+				; break;
+			case')'://不入栈，出栈信号，'('之后的运算符全出来
+				while (charsta.data[charsta.top - 1] != '(')
+				{
+					ch = charsta.data[--charsta.top];
+					Calc(&numsta, ch);
+				}
+				ch = charsta.data[--charsta.top];//把'('也弹出，但不参与运算
+				; break;
+			}			
+		}
+	}
+	while (charsta.top > 0)//把剩下的运算符处理掉
+	{
+		ch = charsta.data[--charsta.top];
+		Calc(&numsta, ch);
+	}
+	printf("%d\n", numsta.data[numsta.top - 1]);
+}
