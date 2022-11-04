@@ -79,7 +79,7 @@ int main()
 				{
 					while (ch[b - 1] != '(')//往下处理，直到遇到左括号
 					{
-						num[a - 2] = Cal(num[a - 2], ch[b - 1], num[a - 1], flag);
+						num[a - 2] = Cal(num[a - 2], num[a-1], ch[b-1], flag);
 						num[a - 1] = 0;
 						b--;//改变运算符栈顶
 						a--;//改变运算数栈顶
@@ -98,7 +98,7 @@ int main()
 						{
 							if (ch[b - 1] == '(')//多重括号的情况
 								break;
-							num[a - 2] = Cal(num[a - 2], ch[b - 1], num[a - 1], flag);
+							num[a - 2] = Cal(num[a - 2], num[a-1], ch[b-1], flag);
 							num[a - 1] = 0;
 							b--;
 							a--;
@@ -112,7 +112,7 @@ int main()
 		}
 		while (a != 1 && b > 0)//运算数栈中剩余两位，符号剩余一位，把剩下的处理掉
 		{
-			num[a - 2] = Cal(num[a - 2], ch[b - 1], num[a - 1], flag);
+			num[a - 2] = Cal(num[a - 2], num[a-1], ch[b-1], flag);
 			a--;
 			b--;
 		}
