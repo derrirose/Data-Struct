@@ -1,0 +1,23 @@
+#include<iostream>
+using namespace std;
+void getnext(int* next,string& s)//求next数组
+{
+	next[0] = 0;
+	int j = 0;//j是前缀末尾
+	for (int i = 1; i < s.size(); i++)//i是后缀末尾,注意j从首位即0开始，i就从它后一位即1开始
+	{
+		while (j > 0 && s[j] != s[i])//注意j不能小于0，最多回退到串首即0，也不能写成if，因为回退可能不止一步
+			j = next[j - 1];
+		if (s[j] == s[i])
+			j++;//往后继续找
+		next[i] = j;//在if相等外，如果j回退到0还与后缀不等则next[i]置为0
+	}
+}
+int main()
+{
+	string s = "aabaaf";
+	int next[6];
+	getnext(next, s);
+	for (int i = 0; i < 6; i++)
+		cout << next[i] << " ";
+}
