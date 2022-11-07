@@ -1,0 +1,39 @@
+#include<iostream>
+using namespace std;
+void getnext(string P,int next[],int m)
+{
+	next[0] = -1;
+	int k = -1;
+	for (int j = 0; j < m; j++)
+	{
+		while (k >= 0 && P[k] != P[j])
+			k = next[k];
+		next[j+1] = ++k;
+	}
+}
+int KMP(string S, string P,int n,int m)//S是目标串，长度n；P是模式串，长度m
+{
+	int i = 0, j = 0;
+	int next[50];
+	getnext(P,next,m);
+	while (j < m && i < n)
+	{
+		if (j == -1 || S[i] == P[j])
+			i++, j++;
+		else
+			j = next[j];
+	}
+	return i - j;
+}
+int main()
+{
+	string p = "aabaaf";
+	string s = "aabaabaaf";
+	int n = s.size();
+	int m = p.size();
+	if (KMP(s, p, n, m) <= (n - m))
+	{
+		cout << "succeed";
+	}
+	else cout << "fail";
+}
