@@ -1,0 +1,46 @@
+#include<stdio.h>
+#include<string.h>
+void getnext(char P[], int next[], int m, int* first, int* second)
+{
+	next[0] = -1;
+	int k = -1;
+	int max = next[0];
+	for (int j = 0; j < m; j++)
+	{
+		while (k >= 0 && P[k] != P[j])
+			k = next[k];
+		next[j + 1] = ++k;
+		if (max < next[j + 1])
+			max = next[j + 1];
+	}
+	*first = max;
+	if ((next[max] == 1 && max != m - 1) || next[max] == -1) *second = 0;
+	else if (next[next[m - 1]] == 0&&max!=m-1) *second = *first;
+	else *second = next[next[m - 1]] + 1;
+}
+int main()
+{
+	char inp[100000];
+	while (scanf("%s", inp) != EOF)
+	{
+		int next[100000];
+		int first = 0;
+		int second = 0;
+		int len = strlen(inp);
+		int top = 0, end = len - 1;	//定义两个变量指向开头和末尾
+		while (top < end) 
+		{			//一直交换开头和末尾
+			char temp = inp[top];
+			inp[top] = inp[end];
+			inp[end] = temp;
+			top++;
+			end--;
+		}
+		getnext(inp, next, len, &first, &second);
+		int len2 = 0;
+		if (second * 2 >= len)
+			len2 = 0;
+		else len2 =  len - second * 2;
+		printf("%d\n", first + len2);
+	}
+}
