@@ -1,0 +1,67 @@
+#include <iostream>
+using namespace std;
+int istree = 1;//全局变量，判断树是否合法
+struct Btree
+{
+    struct Btree* left;
+    struct Btree* right;
+    char data;
+};
+void BuildTree(string post,string in,Btree*& T,int len,int pstart,int istart)//递归建树
+{
+    int flag = 0;//找到总根的标志
+    int froot = 0;//找到总根后保存其在中根序列中的下标
+    int postlen = pstart + len;//总根元素下标
+    int inlen = istart + len;//中根序列中总根左或右边第一个元素
+    for(froot = istart;froot<inlen;froot++)//找到中根序列中对应后根序列中最后一个元素即总根的位置
+    {
+        if(in[froot]==post[postlen-1])
+        {
+            flag = 1;
+            break;
+        }
+    }
+    int leftlen = froot - istart;//中根序列中总根左子树上元素个数
+    int rightlen = len-1-froot+istart;//右子树上元素个数(长度-1再减去左边长度)
+    if(flag)
+    {
+        T = new Btree();//开始建树
+        T->data = in[froot];
+        if(leftlen>0)//先递归建左子树
+            BuildTree(post,in,T->left,leftlen,pstart,istart);
+        if(rightlen>0)//再递归建右子树
+            BuildTree(post,in,T->right,rightlen,pstart-istart+froot,froot+1);
+    }
+    else
+        istree = 0;//递归建树中有一个点没对上istree都会变成0
+}
+int height(Btree* T)
+{
+    if (!T) return -1;
+    int lefth = height(T->left);
+    int righth = height(T->right);
+    return max(lefth,righth)+1;
+}
+void Preorder(Btree* T)//先根遍历
+{
+    if(!T) return;
+    cout<<T->data;
+    Preorder(T->left);
+    Preorder(T->right);
+}
+int main()
+{
+    string post;//后根序列
+    string in;//中根序列
+    cin>>post>>in;
+    int len = in.length();
+    Btree* root = new Btree();
+    BuildTree(post,in,root,len,0,0);
+    if(istree == 0) cout<<"INVALID";
+    else
+    {
+        cout<<height(root)<<endl;
+        Preorder(root);
+    }
+    return 0;
+}
