@@ -1,0 +1,85 @@
+#include<iostream>
+#include<queue>
+using namespace std;
+struct Btree
+{
+	struct Btree* left;
+	struct Btree* right;
+	int data;
+};
+Btree* BuildTree()
+{
+	Btree* T = nullptr;
+	int x = 0;
+	scanf("%d", &x);
+	if (!x)
+	{
+		T = nullptr;
+	}
+	else
+	{
+		T = new Btree();
+		T->data = x;
+		T->left = BuildTree();
+		T->right = BuildTree();
+	}
+	return T;
+}
+void STravel(Btree* T, int s, int e)
+{
+	int flag = 0;
+	if (!T) return;
+	deque<Btree*> deq;
+	deq.push_front(T);
+	deq.push_back(nullptr);
+	while (!deq.empty())
+	{
+		Btree* pCur = new Btree();
+		if (deq.front() == deq.back()) break;
+		if (!deq.back())
+		{
+			while (deq.front())
+			{
+				pCur = deq.front();
+				deq.pop_front();
+				if (pCur->data == s)
+					flag = 1;
+				if (flag)				
+					printf("%d ", pCur->data);				
+				if (pCur->data == e)
+					goto out;
+				if (pCur->right )				
+					deq.push_back(pCur->right);				
+				if (pCur->left)				
+					deq.push_back(pCur->left);				
+			}
+		}
+		if (!deq.front() )
+		{
+			while (deq.back())
+			{
+				pCur = deq.back();
+				deq.pop_back();
+				if (pCur->data == s)				
+					flag = 1;				
+				if (flag)				
+					printf("%d ", pCur->data);				
+				if (pCur->data == e)
+					goto out;
+				if (pCur->left)				
+					deq.push_front(pCur->left);
+				if (pCur->right)				
+					deq.push_front(pCur->right);				
+			}
+		}
+	}
+    out:;
+}
+int main()
+{
+	Btree* root = BuildTree();	
+	int start = 0, end = 0;
+	scanf("%d%d", &start, &end);
+	STravel(root, start, end);
+	return 0;
+}
