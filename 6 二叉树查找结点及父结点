@@ -1,0 +1,57 @@
+#include<iostream>
+using namespace std;
+int num = 0;
+int flag = 0;
+struct Btree
+{
+    struct Btree* left;
+    struct Btree* right;
+    int data;
+};
+Btree* BuildTree()
+{
+    Btree* T = nullptr;
+    int x = 0;
+    scanf("%d", &x);
+    if (!x)
+        T = nullptr;
+    else
+    {
+        T = new Btree();
+        T->data = x;
+        T->left = BuildTree();
+        T->right = BuildTree();
+    }
+    return T;
+}
+void find(Btree*T)
+{
+    if(T)
+    {
+        if((T->left&&T->left->data==num)||(T->right&&T->right->data==num))
+        {
+        flag = 1;
+        printf("%d",T->data);
+        }
+     else
+     {
+       find(T->left);
+       find(T->right);
+     }
+    }
+}
+int main()
+{
+     Btree* root = BuildTree();
+     int m = 0;
+     scanf("%d",&m);
+    while(m--)
+    {
+        scanf("%d",&num);
+        flag = 0;
+        find(root);
+        if(!flag)
+            printf("0");
+        printf("\n");
+    }
+}
