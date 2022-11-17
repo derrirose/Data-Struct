@@ -1,0 +1,57 @@
+#include<iostream>
+using namespace std;
+struct Btree
+{
+    struct Btree* left;
+    struct Btree* right;
+    int data;
+};
+Btree* BuildTree()
+{
+    Btree* T = nullptr;
+    int x = 0;
+    scanf("%d",&x);
+    if(!x)
+    {
+        T= nullptr;
+    }
+    else
+    {
+        T = new Btree();
+        T->data = x;
+        T->left = BuildTree();
+        T->right = BuildTree();
+    }
+    return T;
+}
+void Preorder(Btree* T)//先根遍历
+{
+    if (!T) return;
+    printf("%d ",T->data);
+    Preorder(T->left);
+    Preorder(T->right);
+}
+void Inorder(Btree* T)//中根遍历
+{
+    if (!T) return;
+    Inorder(T->left);
+    printf("%d ",T->data);
+    Inorder(T->right);
+}
+void Postorder(Btree* T)//后根遍历
+{
+    if (!T) return;
+    Postorder(T->left);
+    Postorder(T->right);
+    printf("%d ",T->data);
+}
+int main()
+{
+      Btree* root = BuildTree();
+    Preorder(root);
+    printf("\n");
+    Inorder(root);
+    printf("\n");
+    Postorder(root);
+    printf("\n");
+}
