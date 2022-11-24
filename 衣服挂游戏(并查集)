@@ -1,0 +1,39 @@
+#include<iostream>
+using namespace std;
+int father[30001];
+int Find(int x)
+{
+    if(father[x]==0)
+        return x;//x是根
+        //递归查找根节点，同时路径压缩
+        father[x] = Find(father[x]);
+        return father[x];
+}
+void Union(int x,int y)
+{
+    if(Find(x)!= Find(y))
+        father[Find(y)] = Find(x);
+}
+int main()
+{
+     int T = 0;
+     scanf("%d",&T);
+     while(T--)
+     {
+         int n = 0;
+         int m = 0;
+         scanf("%d%d",&n,&m);
+         for(int i = 1;i<n+1;i++)
+             father[i] = 0;
+         for(int t = 0;t<m;t++)
+         {
+             int a = 0;
+             int b = 0;
+             scanf("%d%d",&a,&b);
+             Union(b,a);
+         }
+         for(int w = 1;w<n+1;w++)
+             printf("%d ",Find(w));
+         printf("\n");
+     }
+}
