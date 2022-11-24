@@ -1,0 +1,79 @@
+#include<iostream>
+#include<stack>
+using namespace std;
+int side = 0;
+int ff[150000];
+struct Btree
+{
+    struct Btree* left;
+    struct Btree* right;
+    int data;
+    int count;
+};
+Btree* BuildTree()
+{
+    Btree* T = nullptr;
+    int x = 0;
+    scanf("%d", &x);
+    if (!x)
+        T = nullptr;
+    else
+    {
+        T = new Btree();
+        T->data = x;
+        T->left = BuildTree();
+        T->count = side++;
+        T->right = BuildTree();
+    }
+    return T;
+}
+int Find1(Btree* T)
+{
+    if(!T) return 0;
+    int l = Find1(T->left);
+    int r = Find1(T->right);
+    int sum =l + r + T->data;
+    ff[T->count] = sum;
+    return sum;
+}
+int Find2(Btree* T,int size,int&a,int&b)
+{
+   stack<Btree*> t;
+   Btree* p =T;
+   int min = 9999;
+   while(1)
+   {
+       while(p)
+       {
+           t.push(p);
+           p = p->left;
+       }
+       if(t.empty()) return min;
+       p = t.top();
+       t.pop();
+       int sum = ff[p->count];
+       int x = abs(sum);
+       int y = abs(size - sum);
+       if(abs(x-y)<=min)
+       {
+           min = abs(x-y);
+           a = sum;
+           b = size - sum;
+       }
+       p = p->right;
+   }
+}
+
+int main()
+{
+    int l = 0;//左分割树
+    int r = 0;//右
+    Btree* root = BuildTree();
+    int size = Find1(root);
+    int min = Find2(root,size,l,r);
+    printf("%d ",min);
+    if(l<r)
+        printf("%d %d",l,r);
+    else
+        printf("%d %d",r,l);
+}
