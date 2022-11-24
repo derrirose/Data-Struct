@@ -1,0 +1,79 @@
+#include<iostream>
+using namespace std;
+long long int sum = 0;
+long long int best = 0;
+struct Btree
+{
+    struct Btree* left;
+    struct Btree* right;
+    int data;
+};
+Btree* BuildTree()
+{
+    Btree* T = nullptr;
+    int x = 0;
+    scanf("%d", &x);
+    if (!x)
+        T = nullptr;
+    else
+    {
+        T = new Btree();
+        T->data = x;
+        T->left = BuildTree();
+        T->right = BuildTree();
+    }
+    return T;
+}
+void Find1(Btree* T)
+{
+    if(!T) return;
+    sum+=T->data;
+    Find1(T->left);
+    Find1(T->right);
+}
+long long int Find2(Btree* T)
+{
+    if(!T) return 0;
+    long long int cur = Find2(T->left)+Find2(T->right) + T->data;
+    if(abs(cur*2-sum)<abs(best*2-sum))
+        best =cur;
+    return cur;
+}
+Btree* FindL(Btree*T)
+{
+    if(!T) return nullptr;
+    Btree* p = T;
+    while(p->right)
+        p = p->right;
+    return p;
+}
+int main()
+{
+     Btree* root = BuildTree();
+     Btree* tem = FindL(root);
+     Find1(root);
+     int tmp = Find2(root);
+     if(tmp)
+     {
+         printf("%lld ", abs(abs(best) - abs(sum - best)));
+         if (best < (sum - best))
+             printf("%lld %lld", best, (sum - best));
+         else
+             printf("%lld %lld", (sum - best), best);
+     }
+     else
+     {
+         if(tem->data<(0-tem->data))
+         {
+             printf("0 ");
+             printf("%d ", tem->data);
+             printf("%d", (0 - tem->data));
+         }
+         else
+         {
+             printf("0 ");
+             printf("%d ",( 0-tem->data));
+             printf("%d", tem->data);
+         }
+     }
+}
