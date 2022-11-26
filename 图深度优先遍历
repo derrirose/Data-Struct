@@ -1,0 +1,105 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int visited[20001];
+
+struct Edge//邻接表边节点
+{
+    int adjvex;
+    struct Edge* next;
+};
+
+struct Vertex//邻接表头节点
+{
+    int vertex;
+    Edge* first;//节点头指针
+};
+
+typedef Vertex AdjList[20001];//定义由顶点构成的结构体数组
+
+struct AGraph//顶点表
+{
+    AdjList alist;
+};
+
+void CreateG(AGraph& G,int n,int e)//构建有向图
+{
+    Edge* ed;
+    int x = 0;
+    int y = 0;
+    for(int i = 0;i<n;i++)//顶点表数据域填值,初始化顶点表指针域
+    {
+        G.alist[i].vertex = i;
+        G.alist[i].first = nullptr;
+    }
+    for(int i = 0;i<e;i++)
+    {
+        scanf("%d%d",&x,&y);
+        ed = new Edge();
+        ed->adjvex = y;    //填上坐标
+        Edge* p = G.alist[x].first;    //头插法
+        ed->next = G.alist[x].first;
+        G.alist[x].first = ed;
+    }
+    for (int i = 0; i < n; i++)
+    {
+        int t = 0;
+        Edge* p = G.alist[i].first;
+        while (p)
+        {
+            if (p->next)
+            {
+                if ((p->adjvex) > (p->next->adjvex))
+                {
+                    t = p->adjvex;
+                    p->adjvex = p->next->adjvex;
+                    p->next->adjvex = t;
+                }
+            }
+            p = p->next;
+        }    //用冒泡排序调整表节点次序
+    }
+}
+
+void DFS(AGraph& G, int i,int n,int e)
+{
+    Edge* p;
+    printf("%d ", G.alist[i].vertex);    //访问当前节点并输出
+    visited[i] = 1;    //标记当前节点为已访问
+    p = G.alist[i].first;
+    while (p)
+    {
+        if (visited[p->adjvex] == 0)    //邻节点没被访问过就递归调用DFS
+        {
+            DFS(G, p->adjvex,n,e);
+        }
+        p = p->next;    //查找完后向后移动
+    }
+}
+
+void Start(AGraph& G,int n, int e)
+{
+    int i;
+    for (i = 0; i < n; i++)
+    {
+        visited[i] = 0;
+    }    //初始化标志数组
+    for (i = 0; i < n; i++)
+    {
+        if (!visited[i])
+        {
+            DFS(G, i,n,e);
+        }
+    }
+}
+int main()
+{
+    AGraph g;
+    int n = 0;
+    int e = 0;
+    scanf("%d%d", &n, &e);
+    CreateG(g,n,e);
+    Start(g,n,e);
+}
