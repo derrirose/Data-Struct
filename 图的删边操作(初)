@@ -1,0 +1,60 @@
+#include<stdio.h>
+#include<stdlib.h>
+/**/
+
+typedef struct E{
+    int weight;
+    int vt2;
+    struct E* next;
+}*edge;
+
+int main(int argc, char const* argv[])
+{
+    int v, e, dele;
+    int v1, v2, w;
+    edge temp;
+    scanf("%d %d", &v, &e);
+    edge* map = (edge*)malloc(v * sizeof(edge));
+    for (int i = 0; i < v; i++) {
+        map[i] = (edge)malloc(sizeof(struct E));
+        map[i]->vt2 = i;
+        map[i]->weight = 0;
+        map[i]->next = NULL;
+    }
+
+    /*for (int i = 0; i < v;i++) {
+        printf("%d",map[i]->vt2);
+    }*/
+
+    for (int j = 0; j < e; j++) {
+        scanf("%d %d %d", &v1, &v2, &w);
+        edge medge = (edge)malloc(sizeof(struct E));
+        medge->vt2 = v2; medge->weight = w; medge->next = NULL;
+        edge ptr = map[v1];
+        while (ptr->next && ptr->next->vt2 < v2) {
+            ptr = ptr->next;
+        }
+        temp = ptr->next; ptr->next = medge; medge->next = temp;
+    } //将边按大小顺序插入到邻接表中
+
+    scanf("%d", &dele);
+    for (int k = 0; k < dele; k++) {
+        scanf("%d %d", &v1, &v2);
+        edge ptr = map[v1];
+        while (ptr->next && ptr->next->vt2!=v2) ptr = ptr->next;
+        temp = ptr->next; ptr->next = ptr->next->next; free(temp);
+    }
+
+    edge ptr;
+    for (int m = 0; m < v; m++) {
+        if (map[m]->next) printf("%d:", m);
+        ptr = map[m]->next;
+        while (ptr) {
+            printf("(%d,%d,%d)", m, ptr->vt2, ptr->weight);
+            ptr = ptr->next;
+        }
+        if (map[m]->next&&m!=v-1)printf("\n");
+    }
+
+    return 0;
+}
