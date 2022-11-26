@@ -1,0 +1,51 @@
+#include<stdio.h>
+#include<string.h>
+void buildNext(char S[], int len, int next[])
+{
+    int k = -1;
+    next[0] = -1;
+    for (int j = 1; j < len; j++)
+    {
+        k = next[j - 1];
+        while (k >= 0 && S[k + 1] != S[j])
+            k = next[k];
+        if (S[k + 1] == S[j])
+            next[j] = k + 1;
+        else next[j] = -1;
+    }
+}
+
+int main()
+{
+    char S[100001];
+    char P[100001];
+    int next[100001];
+    int Si = 0;
+    int Pi = 0;
+    scanf("%s",S);
+    scanf("%s",P);
+    int Slen = strlen(S);
+    int Plen = strlen(P);
+    buildNext(P, Plen, next);
+    while (Si < Slen && Pi < Plen)
+    {
+        if (S[Si] == P[Pi])
+        {
+            Si++;
+            Pi++;
+        }
+        else if (Pi == 0)
+            Si++;
+        else Pi = next[Pi - 1] + 1;
+    }
+    int p14, p24, p34;
+    p14 = next[Plen / 4 - 1] + 1;
+    p24 = next[2 * Plen / 4 - 1] + 1;
+    p34 = next[3 * Plen / 4 - 1] + 1;
+
+    printf("%d %d %d\n",p14,p24,p34);
+    if (Pi < Plen)
+        printf("-1");
+    else printf("%d", Si - Plen);
+    return 0;
+}
