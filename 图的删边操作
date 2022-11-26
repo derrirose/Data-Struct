@@ -1,0 +1,78 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct edge
+{
+    int weight;
+    int vertex;
+    struct edge* next;
+};
+
+void Operate(edge**graph,int n,int e);
+
+void Create(edge**graph,int n,int e)
+{
+    int from, to, wei;
+    edge* temp;
+    graph = (edge**)malloc(n * sizeof(edge*));
+    for (int i = 0; i < n; i++)
+    {
+        graph[i] = (edge*)malloc(sizeof(struct edge));
+        graph[i]->vertex = i;
+        graph[i]->weight = 0;
+        graph[i]->next = nullptr;
+    }
+    for (int j = 0; j < e; j++)
+    {
+        scanf("%d%d%d", &from, &to, &wei);
+        edge* medge = (edge*)malloc(sizeof(struct edge));
+        medge->vertex = to;
+        medge->weight = wei;
+        medge->next = nullptr;
+        edge* ptr = graph[from];
+        while (ptr->next && ptr->next->vertex < to) ptr = ptr->next;
+        temp = ptr->next;
+        ptr->next = medge;
+        medge->next = temp;
+    } //将边按大小顺序插入到邻接表中
+    Operate(graph,n,e);
+}
+
+void Operate(edge**graph,int n,int e)
+{
+    int dele;
+    int from, to;
+    edge* temp;
+    scanf("%d", &dele);
+    for (int k = 0; k < dele; k++)
+    {
+        scanf("%d %d", &from, &to);
+        edge* ptr = graph[from];
+        while (ptr->next && ptr->next->vertex != to) ptr = ptr->next;
+        temp = ptr->next;
+        ptr->next = ptr->next->next;
+        free(temp);
+    }
+    edge* ptr;
+    for (int m = 0; m < n; m++)
+    {
+        if (graph[m]->next) printf("%d:", m);
+        ptr = graph[m]->next;
+        while (ptr)
+        {
+            printf("(%d,%d,%d)", m, ptr->vertex, ptr->weight);
+            ptr = ptr->next;
+        }
+        if (graph[m]->next&&m!=n-1)
+            printf("\n");
+    }
+}
+
+int main()
+{
+    edge** g;
+    int n = 0;
+    int e = 0;
+    scanf("%d%d",&n,&e);
+    Create(g,n,e);
+    return 0;
+}
