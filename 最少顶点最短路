@@ -1,0 +1,177 @@
+#include<iostream>
+#include<queue>
+using namespace std;
+
+#define INF 0x3f3f3f3f
+#define N 99999
+
+struct Edge;
+
+struct Vertex
+{
+    int vername;
+    Edge* adj;
+};
+
+struct Edge
+{
+    int veradj;
+    int cost;
+    Edge* link;
+};
+
+struct Node
+{
+    int v;
+    int dist;
+    Node(int a,int b)
+    {
+        v = a;
+        dist = b;
+    }
+    bool operator <(const Node& b) const
+    {
+        return dist > b.dist;
+    }
+};
+
+Vertex head[15000];
+
+void Create(int e)
+{
+    Edge* pre = nullptr;
+    Edge* p = nullptr;
+    int u = 0;
+    int v = 0;
+    int weight = 0;
+    for(int i = 0;i<e;i++)
+    {
+        scanf("%d%d%d",&v,&u,&weight);
+        p = head[v].adj;
+        if(!p)
+        {
+            Edge* tmp = new Edge();
+            tmp->veradj = u;
+            tmp->cost = weight;
+            tmp->link = nullptr;
+            head[v].adj = tmp;
+        }
+        else
+        {
+            while (p)
+            {
+                if (u > p->veradj)
+                {
+                    pre = p;
+                    p = p->link;
+                } else
+                    break;
+            }
+            if (p == head[v].adj)
+            {
+                Edge *m = new Edge();
+                m->link = p;
+                m->cost = weight;
+                m->veradj = u;
+                head[v].adj = m;
+            } else
+            {
+                Edge *m = new Edge();
+                m->cost = weight;
+                m->veradj = u;
+                m->link = p;
+                pre->link = m;
+            }
+        }
+    }
+}
+
+void dij(int n, int dist[], int path[], int count[])
+{
+    int i = 0;
+    int v = 0;
+    int w = 0;
+    int S[N]={0};
+    for (i = 0; i < n; i++)
+    {
+        path[i] = -1;
+        dist[i] = INF;
+    }
+    dist[0] = 0;
+    priority_queue<Node>PQ;
+    PQ.push(Node(0, dist[0]));
+    while (!PQ.empty())
+    {
+        Node q = PQ.top();
+        PQ.pop();
+        v = q.v;
+        if (S[v] == 1) continue;
+        S[v] = 1;
+        for (Edge* p = head[v].adj; p; p = p->link)
+        {
+            w = p->veradj;
+            if (S[w] == 0 && dist[v] + p->cost < dist[w])
+            {
+                dist[w] = dist[v] + p->cost;
+                path[w] = v;
+                count[w] = count[v] + 1;
+                PQ.push(Node(w, dist[w]));
+            }
+            if (S[w] == 0 && dist[w] == dist[v] + p->cost && count[v] + 1 < count[w])
+            {
+                dist[w] = dist[v] + p->cost;
+                path[w] = v;
+                count[w] = count[v] + 1;
+                PQ.push(Node(w, dist[w]));
+            }
+        }
+    }
+}
+
+int main()
+{
+    int n = 0;
+    int e = 0;
+    scanf("%d%d",&n,&e);
+    for(int i = 0;i<n;i++)
+    {
+        head[i].vername = i;
+        head[i].adj = nullptr;
+    }
+    Create(e);
+    int dist[15000] = {0};
+    int path[15000] = {0};
+    int count[15000] = { 0 };
+    int l = 0;
+    int Unname[15000] = {0};
+    dij(n, dist, path, count);
+    for (int i = 1; i < n; i++)
+    {
+        int t = i;
+        l = 0;
+        int flag = 1;
+        while (1)
+        {
+            if (t == 0)
+            {
+                Unname[l] = 0;
+                break;
+            }
+            Unname[l++] = t;
+            if (path[t] != -1)
+                t = path[t];
+            else
+            {
+                flag = 0;
+                break;
+            }
+        }
+        if (flag == 1)
+        {
+            for (int j = l; j > 0; j--)
+                cout << Unname[j] << "->";
+            cout << Unname[0] << endl;
+        }
+    }
+    return 0;
+}
