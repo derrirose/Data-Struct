@@ -83,7 +83,6 @@ void Judge(int dist1[], int dist2[],int t)
     int l4 = 0;
     int change = INF;
     int sum = INF;
-    int min = INF;
     sum = l1 = dist1[t];
     for (int i = 0; i < k; i++)
     {
@@ -102,14 +101,12 @@ void Judge(int dist1[], int dist2[],int t)
             if (a < change)
                 change = a;
         }
-        if (change < min)
-            min = change;
     }
     printf("%d\n", sum);
     if (change == INF)
         printf("no metro\n");
     else
-        printf("%d\n", min);
+        printf("%d\n", change);
 }
 
 int main()
@@ -128,6 +125,7 @@ int main()
         int m;
         Edge* pre = nullptr;
         Edge* p = nullptr;
+        Edge* q = nullptr;
         int v = 0;
         int u = 0;
         int weight = 0;
@@ -136,6 +134,7 @@ int main()
         {
             scanf("%d%d%d", &v, &u, &weight);
             p = head[v].adj;
+            q = head[u].adj;
             if (!p)
             {
                 Edge* tmp = new Edge();
@@ -173,12 +172,49 @@ int main()
                     pre->link = x;
                 }
             }
+            pre = nullptr;
+            if (!q)
+            {
+                Edge* tmp = new Edge();
+                tmp->veradj = v;
+                tmp->cost = weight;
+                tmp->link = nullptr;
+                head[u].adj = tmp;
+            }
+            else
+            {
+                while (q)
+                {
+                    if (v > q->veradj)
+                    {
+                        pre = q;
+                        q = q->link;
+                    } else
+                        break;
+                }
+                if (q == head[u].adj)
+                {
+                    Edge *x = new Edge();
+                    x->link = q;
+                    x->cost = weight;
+                    x->veradj = v;
+                    head[u].adj = x;
+                }
+                else
+                {
+                    Edge *x = new Edge();
+                    x->cost = weight;
+                    x->veradj = v;
+                    x->link = q;
+                    pre->link = x;
+                }
+            }
         }
         int dist1[20002] = { 0 };
         int dist2[20002] = { 0 };
         dis(n, s, t, dist1);
         dis(n, t, s, dist2);
-        Judge(dist1, dist2, t);    
+        Judge(dist1, dist2, t);
     }
     return 0;
 }
