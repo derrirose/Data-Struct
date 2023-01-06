@@ -1,0 +1,144 @@
+#include<iostream>
+#include<queue>
+#include<cmath>
+#include<cstring>
+using namespace std;
+
+#define INF 0x3f3f3f3f
+#define MAX 201
+
+int main()
+{
+    int n = 0;
+    int e = 0;
+    while(scanf("%d%d",&n,&e)!=EOF)
+    {
+        int Edge[MAX][MAX] = {0};
+        int in[MAX] = {0};
+        int out[MAX] = {0};
+        int early[MAX] = {0};
+        int late[MAX] = {0};
+        int Max = 0;
+        int s[MAX] = {0};
+        int l = 0;
+        int temp1 = 0;
+        memset(in, 0, sizeof in);
+        memset(out, 0, sizeof out);
+        memset(early, 0, sizeof early);
+        memset(late, 0, sizeof late);
+        memset(s, 0, sizeof s);
+        for (int i = 0; i < MAX; i++)//初始化
+        {
+            late[i] = INF;
+            for (int j = 0; j < MAX; j++)
+            {
+                Edge[i][j] = INF;
+            }
+        }
+        for (int i = 1; i <= e; i++)//输入，建图
+        {
+            int a, b, c;
+            scanf("%d%d%d",&a,&b,&c);
+            Edge[a][b] = c;
+            in[b]++;
+            out[a]++;
+        }
+        //Earliest部分
+        int count = 0;
+        int cnt = 0;
+        queue<int>qu;
+        for (int i = 1; i <= n; i++)
+        {
+            if (in[i] == 0)
+                qu.push(i);
+        }
+        while (!qu.empty())
+        {
+            int temp = qu.front();
+            cnt++;
+            qu.pop();
+            for (int i = 1; i <= n; i++)
+            {
+                if (Edge[temp][i] != INF)
+                {
+                    in[i]--;
+                    early[i] = max(early[i], early[temp] + Edge[temp][i]);
+                    if (in[i] == 0)qu.push(i);
+                }
+            }
+        }
+        if (cnt != n)
+            count = -1;
+        else
+        {
+            int amount = -999;
+            for (int i = 1; i <= n; i++)
+            {
+                if (early[i] > amount)
+                    amount = early[i];
+            }
+            count =  amount;
+        }
+        if (count == -1)
+        {
+            printf("unworkable project\n");
+            continue;
+        }
+        //Latest部分
+        queue<int>qu1;
+        for (int i = 1; i <= n; i++)
+        {
+            if (out[i] == 0)
+            {
+                qu1.push(i);
+                late[i] = count;
+            }
+        }
+        while (!qu1.empty())
+        {
+            int temp = qu1.front();
+            qu1.pop();
+            for (int i = n; i >= 1; i--)
+            {
+                if (Edge[i][temp] != INF)
+                {
+                    out[i]--;
+                    late[i] = min(late[i], late[temp] - Edge[i][temp]);
+                    if (out[i] == 0)
+                        qu1.push(i);
+                }
+            }
+        }
+        
+        printf("%d\n",count);
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = n; j >= 1; j--)
+            {
+                if (Edge[i][j] != INF && late[j] - early[i] == Edge[i][j])
+                {
+                    s[2 * l] = i;
+                    s[2 * l + 1] = j;
+                    ++l;
+                    Max++;
+                }
+            }
+        }
+        for (int k = 0; k < Max; k++)
+        {
+            if (s[2 * k] == s[2 * k + 2])
+            {
+                if (s[2 * k + 1] > s[2 * k + 3])
+                {
+                    temp1 = s[2 * k + 1];
+                    s[2 * k + 1] = s[2 * k + 3];
+                    s[2 * k + 3] = temp1;
+                }
+            }
+        }
+        for (int k = 0; k < Max; k++)
+        {
+            printf("%d->%d\n",s[2*k],s[2*k+1]);
+        }
+    }
+}
