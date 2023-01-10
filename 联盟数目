@@ -1,0 +1,70 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+#define INF 0x3f3f3f3f
+#define N 201
+
+int P[N][N];
+int S[N];
+
+void Warshall(int A[N][N],int n,int R[N][N])
+{
+    for(int i = 1;i <= n;i++)
+        for(int j = 1;j <= n;j++)
+            if(i == j ||A[i][j]<INF) R[i][j] = 1;
+            else R[i][j] = 0;
+    for(int k = 1;k<= n;k++)
+        for(int i = 1;i <= n;i++)
+            if(R[i][k]==1)
+                for(int j = 1;j <= n;j++)
+                    if(R[k][j]==1)
+                        R[i][j] = 1;
+}
+
+int SCC(int A[N][N],int n,int scc[])
+{
+    int R[N][N] = {{0}};
+    int vis[N] = {0};
+    for(int i = 1;i<=n;i++)
+        scc[i] = 0;
+    Warshall(A,n,R);
+    int t = 0;
+    for(int i = 1;i<=n;i++)
+        if(vis[i]==0)
+        {
+            t++;
+            vis[i] = 1;
+            scc[i] = t;
+            for(int j = i +1;j<=n;j++)
+                if(j!=i&&vis[j]==0&&R[i][j]==1&&R[j][i]==1)
+                {
+                    vis[j] = 1;
+                    scc[j] = t;
+                }
+        }
+    return t;
+}
+int main()
+{
+    int T = 0;
+    scanf("%d",&T);
+    for(int k = 0;k < T;k++)
+    {
+        int n = 0;
+        int t = 0;
+        memset(P,INF,sizeof P);
+        scanf("%d",&n);
+        for(int j = 1;j < n + 1;j++)
+        {
+            while(1)
+            {
+                scanf("%d",&t);
+                if(t==0) break;
+                P[j][t] = 1;
+            }
+        }
+        printf("%d\n",SCC(P,n,S));
+    }
+    return 0;
+}
