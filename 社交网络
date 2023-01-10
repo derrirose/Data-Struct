@@ -1,0 +1,75 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+#define INF 0x3f3f3f3f
+#define N 101
+
+int main()
+{
+    int n = 0;
+    int e = 0;
+    int a = 0;
+    int b = 0;
+    int c = 0;
+    int Adv[N][N];// 邻接矩阵
+    int Dij[N][N];//i到j的最短距离，初始和邻接矩阵相同
+    int path[N][N];//i到j最短路径上i的下一个编号
+    double result[N];//结果
+    int cnt[N][N];//最短路径数目
+    cin>>n>>e;
+    //初始化
+    memset(Adv, INF, sizeof(Adv));
+    memset(Dij, INF, sizeof(Dij));
+    for (int i = 1; i <= n; i++)
+    {
+        Adv[i][i] = 0;
+        Dij[i][i] = 0;
+    }
+    //输入
+    for (int i = 1; i <= e; i++)
+    {
+        scanf("%d%d%d", &a, &b, &c);
+        Adv[a][b] = c;
+        Dij[a][b] = c;
+        Adv[b][a] = c;
+        Dij[b][a] = c;
+        cnt[a][b] = cnt[b][a] = 1;
+    }
+
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+            if (i != j && Adv[i][j] != INF)
+                path[i][j] = j;
+            else
+                path[i][j] = -1;
+    }
+    //Floyd部分
+    for (int k = 1; k <= n; k++)
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= n; j++)
+            {
+                if (Dij[i][j] == Dij[i][k] + Dij[k][j])
+                    cnt[i][j] += cnt[i][k] * cnt[k][j];
+                else if (Dij[i][j] > Dij[i][k] + Dij[k][j])
+                {
+                    Dij[i][j] = Dij[i][k] + Dij[k][j];
+                    cnt[i][j] = cnt[i][k] * cnt[k][j];
+                }
+            }
+
+    for (int k = 1; k <= n; k++)
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= n; j++)
+            {
+                if (i != j && i != k && j != k)
+                {
+                    if (Dij[i][j] == Dij[i][k] + Dij[k][j])
+                        result[k] += (double)(Dij[i][j] * cnt[i][k] * cnt[k][j]) / (double)cnt[i][j];
+                }
+            }
+    for (int i = 1; i <= n; i++)
+        printf("%.3f\n", result[i]);
+    return 0;
+}
