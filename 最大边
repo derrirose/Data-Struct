@@ -1,0 +1,128 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+#define INF 0x3f3f3f3f
+#define N 2001
+
+int A[N][N] = {{0}};
+int Lowcost[N] = {0};
+int U[N] = {0};
+int k[N] = {0};
+
+int main()
+{
+    int n = 0;
+    int e = 0;
+    int a = 0;
+    int b = 0;
+    int c = 0;
+    int T = 0;
+    scanf("%d%d",&n,&e);
+    memset(A,INF,sizeof A);
+    //建图
+    for(int i = 0;i<e;i++)
+    {
+        scanf("%d%d%d",&a,&b,&c);
+        A[a][b] = c;
+        A[b][a] = c;
+    }
+    //Prim
+    for (int i = 1; i <= n; i++)
+    {
+        Lowcost[i] = A[1][i];
+        U[i] = 1;
+        k[i] = 1;
+    }
+    U[1] = -1; //顶点1方入集合U
+    k[1] = 0;
+    for (int i = 1; i < n; i++) //找n-1条
+    {
+        int v = 0;
+        int min = INF; //找最小跨边
+        for (int j = 1; j <= n; j++)
+            if (U[j] != -1 && Lowcost[j] < min)
+            {
+                v = j;
+                min = Lowcost[j];
+            }
+        U[v] = -1; //v加入U中,累加边权
+        for (int j = 1; j <= n; j++)//更新v在V-U中的邻接顶点的Lowcost和U值
+            if (U[j] != -1 && A[v][j] < Lowcost[j])
+            {
+                Lowcost[j] = A[v][j];
+                U[j] = v;
+                k[j] = v;
+            }
+    }
+    //查部分
+    scanf("%d",&T);
+    for(int i = 0;i< T;i++)
+    {
+        int x = 0;
+        int y = 0;
+        int cmp = 0;
+        int max = 0;
+        scanf("%d%d", &x, &y);
+        //比较
+        if(!x||!y)
+            cmp = 0;
+        else if(x==y)
+            cmp = a;
+        else
+        {
+            int xx = x;
+            int yy = y;
+            int l1 = 1;
+            int l2 = 1;
+            while(k[xx])
+            {
+                l1++;
+                xx = k[xx];
+            }
+            while(k[yy])
+            {
+                l2++;
+                yy = k[yy];
+            }
+            if(xx!=yy)
+            {
+                cmp = 0;
+                break;
+            }
+            if(l1>l2)
+            {
+                xx = x;
+                yy = y;
+            }
+            else
+            {
+                xx = y;
+                yy = x;
+            }
+            for (int i = 0; i < abs(l1 - l2); i++)
+                xx = k[xx];
+            while (xx != yy)
+            {
+                xx = k[xx];
+                yy = k[yy];
+            }
+            cmp = xx;
+        }
+        //最大部分
+        while (x != cmp)
+        {
+            if (A[x][k[x]] > max)
+                max = A[x][k[x]];
+            x = k[x];
+        }
+        while (y != cmp)
+        {
+            if (A[y][k[y]] > max)
+                max = A[y][k[y]];
+            y = k[y];
+        }
+        printf("%d\n",max);
+    }
+    return 0;
+}
